@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Interview-CarRepository</string>
+    <string name="app_name">Car Repository</string>
+
+    <string name="base_url"></string>
 </resources>
