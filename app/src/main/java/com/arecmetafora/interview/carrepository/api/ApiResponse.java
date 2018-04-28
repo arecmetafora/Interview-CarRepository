@@ -1,7 +1,6 @@
 package com.arecmetafora.interview.carrepository.api;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * POJO for all classes returned by the service REST API.

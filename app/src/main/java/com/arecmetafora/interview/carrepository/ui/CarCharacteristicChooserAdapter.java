@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.arecmetafora.interview.carrepository.R;
 import com.arecmetafora.interview.carrepository.api.CarCharacteristic;
-import com.arecmetafora.interview.carrepository.di.FragmentScoped;
 
 import java.util.LinkedList;
 import java.util.List;

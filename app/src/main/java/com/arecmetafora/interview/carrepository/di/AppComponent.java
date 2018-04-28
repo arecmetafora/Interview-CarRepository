@@ -2,7 +2,7 @@ package com.arecmetafora.interview.carrepository.di;
 
 import android.app.Application;
 
-import com.arecmetafora.interview.carrepository.ui.CarCharacteristicsViewModel;
+import com.arecmetafora.interview.carrepository.api.CarCharacteristicsViewModel;
 
 import javax.inject.Singleton;
 

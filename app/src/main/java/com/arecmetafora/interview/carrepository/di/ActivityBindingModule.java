@@ -1,6 +1,5 @@
 package com.arecmetafora.interview.carrepository.di;
 
-import com.arecmetafora.interview.carrepository.ui.CarCharacteristicChooser;
 import com.arecmetafora.interview.carrepository.ui.CarRepositoryActivity;
 import com.arecmetafora.interview.carrepository.ui.CarRepositoryModule;
 
@@ -15,7 +14,7 @@ import dagger.android.ContributesAndroidInjector;
  * When Dagger.Android annotation processor runs it will create 4 subcomponents for us.
  */
 @Module
-public abstract class ActivityBindingModule {
+abstract class ActivityBindingModule {
 
     @ActivityScoped
     @ContributesAndroidInjector(modules = CarRepositoryModule.class)
