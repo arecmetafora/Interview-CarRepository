@@ -2,14 +2,27 @@ package com.arecmetafora.interview.carrepository.di;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.arecmetafora.interview.carrepository.R;
+import com.arecmetafora.interview.carrepository.api.CarCharacteristic;
+import com.arecmetafora.interview.carrepository.api.CarRepositoryApi;
+import com.arecmetafora.interview.carrepository.ui.CarCharacteristicsViewModel;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -24,15 +37,45 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public abstract class AppModule {
 
+    private static final int PAGE_SIZE = 15;
+
     @Binds
     abstract Context bindContext(Application application);
 
     @Provides
     @Singleton
-    static Retrofit providesRetrofit(Application application) {
+    static OkHttpClient provideOkHttpClient(Context context) {
+        return new OkHttpClient.Builder().addInterceptor(
+            new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Request originalRequest = chain.request();
+
+                    HttpUrl newUrl = originalRequest.url().newBuilder()
+                            .addQueryParameter("pageSize", String.valueOf(PAGE_SIZE))
+                            .addQueryParameter("wa_key", context.getString(R.string.api_token))
+                            .build();
+
+                    Request newRequest = originalRequest.newBuilder().url(newUrl).build();
+
+                    return chain.proceed(newRequest);
+                }
+            }).build();
+    }
+
+    @Provides
+    @Singleton
+    static Retrofit provideRetrofit(Context context, OkHttpClient httpClient) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(application.getString(R.string.base_url))
+                .client(httpClient)
+                .baseUrl(context.getString(R.string.base_url))
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    static CarRepositoryApi provideCarRepositoryApi(Retrofit retrofit) {
+        return retrofit.create(CarRepositoryApi.class);
     }
 }

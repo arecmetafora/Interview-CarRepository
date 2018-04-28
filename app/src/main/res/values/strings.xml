@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Car Repository</string>
-
-    <string name="base_url"></string>
+    <string name="all_characteristics">All</string>
 </resources>
