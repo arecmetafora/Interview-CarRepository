@@ -25,6 +25,7 @@ public class CarTypeFilter extends CarCharacteristicFilter {
     public CarTypeFilter(@NonNull Context context, @NonNull ManufacturerFilter manufacturerFilter) {
         super(context.getString(R.string.filter_select_type));
         this.mManufacturerFilter = manufacturerFilter;
+        this.mManufacturerFilter.addDependency(this);
     }
 
     @Override

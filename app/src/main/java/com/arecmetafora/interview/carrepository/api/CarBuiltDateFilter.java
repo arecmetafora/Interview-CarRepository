@@ -31,7 +31,9 @@ public class CarBuiltDateFilter extends CarCharacteristicFilter {
                               @NonNull CarTypeFilter carTypeFilter) {
         super(context.getString(R.string.filter_select_built));
         this.mManufacturerFilter = manufacturerFilter;
+        this.mManufacturerFilter.addDependency(this);
         this.mCarTypeFilter = carTypeFilter;
+        this.mCarTypeFilter.addDependency(this);
     }
 
     @Override

@@ -43,15 +43,20 @@ public class CarRepositoryActivity extends DaggerAppCompatActivity
     }
 
     @Override
-    public void onCharacteristicSelected(CarCharacteristic characteristic) {
-
-    }
-
-    @Override
     public void onCharacteristicFilterOpened(CarCharacteristicFilter characteristicFilter) {
         if(characteristicFilter.preRequisitesWereFulfilled()) {
             CarCharacteristicChooser.newInstance(characteristicFilter)
                     .show(getSupportFragmentManager(), "DIALOG");
+        }
+    }
+
+    @Override
+    public void onCharacteristicSelectedForFilter(CarCharacteristicFilter filter, CarCharacteristic characteristic) {
+        // Translate serialized filter to real  filter instance.
+        filter = mCarCharacteristicFilters.get(mCarCharacteristicFilters.indexOf(filter));
+        if(filter != null) {
+            filter.setSelectedCharacteristic(characteristic);
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

@@ -39,6 +39,7 @@ public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<Car
         final View mView;
         final ImageView mImage;
         final TextView mDescription;
+        final TextView mSelection;
         CarCharacteristicFilter mItem;
 
         ViewHolder(View view) {
@@ -46,6 +47,7 @@ public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<Car
             mView = view;
             mImage = view.findViewById(R.id.car_characteristic_image);
             mDescription = view.findViewById(R.id.car_characteristic_description);
+            mSelection = view.findViewById(R.id.car_characteristic_selection);
         }
     }
 
@@ -89,11 +91,13 @@ public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<Car
 
         holder.mImage.setVisibility(View.GONE);
 
+        holder.mDescription.setText(filter.getFilterDescription());
+
         if(filter.getSelectedCharacteristic() == null) {
-            holder.mDescription.setText(R.string.all_characteristics);
+            holder.mSelection.setText(R.string.all_characteristics);
         } else {
             CarCharacteristic selectedCharacteristic = filter.getSelectedCharacteristic();
-            holder.mDescription.setText(selectedCharacteristic.name);
+            holder.mSelection.setText(selectedCharacteristic.name);
             if(selectedCharacteristic.imageUrl != null) {
                 Glide.with(holder.mImage)
                     .load(selectedCharacteristic.imageUrl)

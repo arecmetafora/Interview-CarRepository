@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Car Repository</string>
     <string name="all_characteristics">All</string>
-    <string name="filter_select_manufacturer">Select a Manufacturer</string>
-    <string name="filter_select_type">Select a Car Type</string>
-    <string name="filter_select_built">Select a Car Built</string>
+    <string name="filter_select_manufacturer">Car Manufacturer</string>
+    <string name="filter_select_type">Car Type</string>
+    <string name="filter_select_built">Car Built Date</string>
     <string name="view_cars">Go!</string>
 </resources>

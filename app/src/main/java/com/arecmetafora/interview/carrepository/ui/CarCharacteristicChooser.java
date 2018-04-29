@@ -27,7 +27,8 @@ import dagger.android.support.DaggerAppCompatDialogFragment;
  * Fragment used to choose a car characteristic for a given filter.
  */
 @ActivityScoped
-public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment {
+public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment
+        implements CarCharacteristicChooserAdapter.CarCharacteristicChooserListener {
 
     /**
      * Bundle argument for the filter used by this characteristic filter.
@@ -43,15 +44,21 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment {
     CarCharacteristicChooserAdapter mAdapter;
 
     /**
+     * Listener to notify observers when a car characteristic was chosen for a given filter.
+     */
+    private CarCharacteristicChooserListener mListener;
+
+    /**
      * Listener to notify events about car characteristic choices.
      */
     public interface CarCharacteristicChooserListener {
         /**
          * Called when a car characteristic was chosen.
          *
+         * @param filter Filter used by the car characteristic chooser.
          * @param characteristic The chosen car characteristic.
          */
-        void onCharacteristicSelected(CarCharacteristic characteristic);
+        void onCharacteristicSelectedForFilter(CarCharacteristicFilter filter, CarCharacteristic characteristic);
     }
 
     @Override
@@ -68,7 +75,7 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment {
                         .get(CarCharacteristicsViewModel.class)
                         .getCharacteristics(mFilter)
                         .observe(this,
-                                characteristics -> mAdapter.setItems(characteristics));
+                                characteristics -> mAdapter.setItems(characteristics, true));
             }
         }
     }
@@ -85,7 +92,36 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment {
         list.setLayoutManager(layoutManager);
         list.addItemDecoration(new DividerItemDecoration(getContext(), layoutManager.getOrientation()));
 
+        mAdapter.setListener(this);
         list.setAdapter(mAdapter);
+
+        // Adds scroll listener to load for data
+        // TODO: Abstract this implementation to a class that extends ReciclerView and use it!
+        /*
+        list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChange
+                d(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if (!isLoading && !isLastPage) {
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                            && firstVisibleItemPosition >= 0
+                            && totalItemCount >= PAGE_SIZE) {
+                        loadMoreItems();
+                    }
+                }
+            }
+        });
+        */
 
         return view;
     }
@@ -95,7 +131,7 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment {
         super.onStart();
 
         assert getDialog().getWindow() != null;
-        getDialog().setTitle(mFilter.getChooserTitle());
+        getDialog().setTitle(mFilter.getFilterDescription());
         getDialog().getWindow().setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
     }
@@ -104,13 +140,21 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof CarCharacteristicChooserListener) {
-            mAdapter.setListener((CarCharacteristicChooserListener) context);
+            mListener = (CarCharacteristicChooserListener) context;
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onCharacteristicSelected(CarCharacteristic characteristic) {
+        if(mListener != null) {
+            mListener.onCharacteristicSelectedForFilter(mFilter, characteristic);
+        }
+        getDialog().dismiss();
     }
 
     /**
