@@ -4,7 +4,14 @@ import android.app.Application;
 import android.content.Context;
 
 import com.arecmetafora.interview.carrepository.R;
+import com.arecmetafora.interview.carrepository.api.CarBuiltDateFilter;
+import com.arecmetafora.interview.carrepository.api.CarCharacteristicFilter;
 import com.arecmetafora.interview.carrepository.api.CarRepositoryApi;
+import com.arecmetafora.interview.carrepository.api.CarTypeFilter;
+import com.arecmetafora.interview.carrepository.api.ManufacturerFilter;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -67,5 +74,23 @@ public abstract class AppModule {
     @Singleton
     static CarRepositoryApi provideCarRepositoryApi(Retrofit retrofit) {
         return retrofit.create(CarRepositoryApi.class);
+    }
+
+    @Provides
+    @Singleton
+    static List<CarCharacteristicFilter> provideCarCharacteristicFilters(Context context) {
+
+        List<CarCharacteristicFilter> filters = new LinkedList<>();
+
+        ManufacturerFilter manufacturerFilter = new ManufacturerFilter(context);
+        filters.add(manufacturerFilter);
+
+        CarTypeFilter carTypeFilter = new CarTypeFilter(context, manufacturerFilter);
+        filters.add(carTypeFilter);
+
+        CarBuiltDateFilter builtDateFilter = new CarBuiltDateFilter(context, manufacturerFilter, carTypeFilter);
+        filters.add(builtDateFilter);
+
+        return filters;
     }
 }

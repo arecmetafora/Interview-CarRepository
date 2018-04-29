@@ -12,6 +12,8 @@ import com.arecmetafora.interview.carrepository.di.FragmentScoped;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
@@ -22,22 +24,4 @@ public abstract class CarRepositoryModule {
     @FragmentScoped
     @ContributesAndroidInjector
     abstract CarCharacteristicChooser carCharacteristicChooser();
-
-    @ActivityScoped
-    @Provides
-    static List<CarCharacteristicFilter> provideCarCharacteristicFilters(Context context) {
-
-        List<CarCharacteristicFilter> filters = new LinkedList<>();
-
-        ManufacturerFilter manufacturerFilter = new ManufacturerFilter(context);
-        filters.add(manufacturerFilter);
-
-        CarTypeFilter carTypeFilter = new CarTypeFilter(context, manufacturerFilter);
-        filters.add(carTypeFilter);
-
-        CarBuiltDateFilter builtDateFilter = new CarBuiltDateFilter(context, manufacturerFilter, carTypeFilter);
-        filters.add(builtDateFilter);
-
-        return filters;
-    }
 }

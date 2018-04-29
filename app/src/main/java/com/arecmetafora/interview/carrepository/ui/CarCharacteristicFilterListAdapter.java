@@ -89,6 +89,13 @@ public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<Car
         CarCharacteristicFilter filter = mValues.get(position);
         holder.mItem = filter;
 
+        if(!filter.preRequisitesWereFulfilled()) {
+            holder.mView.setVisibility(View.GONE);
+            return;
+        } else {
+            holder.mView.setVisibility(View.VISIBLE);
+        }
+
         holder.mImage.setVisibility(View.GONE);
 
         holder.mDescription.setText(filter.getFilterDescription());
@@ -98,6 +105,7 @@ public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<Car
         } else {
             CarCharacteristic selectedCharacteristic = filter.getSelectedCharacteristic();
             holder.mSelection.setText(selectedCharacteristic.name);
+
             if(selectedCharacteristic.imageUrl != null) {
                 Glide.with(holder.mImage)
                     .load(selectedCharacteristic.imageUrl)

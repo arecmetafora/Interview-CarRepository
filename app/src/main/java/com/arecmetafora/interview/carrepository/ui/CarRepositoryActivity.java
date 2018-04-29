@@ -3,6 +3,7 @@ package com.arecmetafora.interview.carrepository.ui;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.arecmetafora.interview.carrepository.R;
 import com.arecmetafora.interview.carrepository.api.CarCharacteristic;
@@ -47,6 +48,8 @@ public class CarRepositoryActivity extends DaggerAppCompatActivity
         if(characteristicFilter.preRequisitesWereFulfilled()) {
             CarCharacteristicChooser.newInstance(characteristicFilter)
                     .show(getSupportFragmentManager(), "DIALOG");
+        } else {
+            Toast.makeText(this, R.string.select_previous_filter, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -42,8 +42,10 @@ public abstract class CarCharacteristicFilter implements Serializable {
      * @param carCharacteristic The car characteristic to be selected.
      */
     public void setSelectedCharacteristic(CarCharacteristic carCharacteristic) {
-        if(mSelectedCharacteristic != null && carCharacteristic != null &&
-                !mSelectedCharacteristic.id.equals(carCharacteristic.id)) {
+        if((mSelectedCharacteristic == null && carCharacteristic != null) ||
+           (mSelectedCharacteristic != null && carCharacteristic == null) ||
+                (mSelectedCharacteristic != null && carCharacteristic != null &&
+                        !mSelectedCharacteristic.id.equals(carCharacteristic.id))) {
             // Clear selection of descendants
             for(CarCharacteristicFilter descendantFilter : descendants) {
                 descendantFilter.setSelectedCharacteristic(null);

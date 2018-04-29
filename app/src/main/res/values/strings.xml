@@ -4,5 +4,6 @@
     <string name="filter_select_manufacturer">Car Manufacturer</string>
     <string name="filter_select_type">Car Type</string>
     <string name="filter_select_built">Car Built Date</string>
+    <string name="select_previous_filter">Filter depends on the selection of other filters.</string>
     <string name="view_cars">Go!</string>
 </resources>

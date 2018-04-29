@@ -1,5 +1,6 @@
 package com.arecmetafora.interview.carrepository.ui;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -112,12 +113,30 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
             return;
         }
 
-        CarCharacteristic characteristic = mValues.get(position);
-        holder.mItem = characteristic;
+        holder.mImage.setVisibility(View.GONE);
+        holder.mView.setBackgroundColor(Color.TRANSPARENT);
+        holder.mView.setOnClickListener(v -> {
+            if (null != mListener) {
+                mListener.onCharacteristicSelected(holder.mItem);
+            }
+        });
 
+        // 0-position means all!
+        if(position == 0) {
+            holder.mItem = null;
+            holder.mDescription.setText(R.string.all_characteristics);
+            return;
+        }
+
+        CarCharacteristic characteristic = mValues.get(position - 1);
+        holder.mItem = characteristic;
         holder.mDescription.setText(characteristic.name);
 
-        holder.mImage.setVisibility(View.GONE);
+        // Painting the background of odd cells with another color (assignment)
+        if(position % 2 == 1) {
+            holder.mView.setBackgroundColor(holder.mView.getContext().getResources()
+                    .getColor(R.color.lightBackground));
+        }
 
         if(characteristic.imageUrl != null) {
             Glide.with(holder.mImage)
@@ -125,22 +144,16 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
                     .into(holder.mImage);
             holder.mImage.setVisibility(View.VISIBLE);
         }
-
-        holder.mView.setOnClickListener(v -> {
-            if (null != mListener) {
-                mListener.onCharacteristicSelected(holder.mItem);
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size() + (mHasMoreDataToLoad ? 1 : 0);
+        return 1 + mValues.size() + (mHasMoreDataToLoad ? 1 : 0);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position < mValues.size()) {
+        if(position <= mValues.size()) {
             return VIEW_TYPE_DATA;
         } else {
             return VIEW_TYPE_LOADING;
