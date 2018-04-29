@@ -17,30 +17,53 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public abstract class CarCharacteristicsViewModel extends AndroidViewModel {
+/**
+ * Load manager for car characteristics, for a given filter.
+ */
+public class CarCharacteristicsViewModel extends AndroidViewModel {
 
+    /**
+     * REST api instance.
+     */
     @Inject
     protected CarRepositoryApi api;
 
+    /**
+     * List of loaded characteristics.
+     */
     private MutableLiveData<List<CarCharacteristic>> mCharacteristics;
 
+    /**
+     * Creates a new view model manager for this characteristic loader.
+     *
+     * @param application The current Android application.
+     */
     CarCharacteristicsViewModel(@NonNull Application application) {
         super(application);
         ((CustomApplication)application).getAppComponent().inject(this);
     }
 
-    public MutableLiveData<List<CarCharacteristic>> getCharacteristics() {
+    /**
+     * Gets the car characteristics for a given filter.
+     *
+     * @param filter The car characteristics filter.
+     * @return List of loaded car characteristics for the given filter (may be loaded in the future. Observe it!)
+     */
+    public MutableLiveData<List<CarCharacteristic>> getCharacteristics(@NonNull CarCharacteristicFilter filter) {
         if (mCharacteristics == null) {
             mCharacteristics = new MutableLiveData<>();
-            loadCharacteristics();
+            loadCharacteristics(filter);
         }
         return mCharacteristics;
     }
 
-    protected abstract Call<ApiResponse> loadCharacteristics(CarRepositoryApi api, int page);
-
-    private void loadCharacteristics() {
-        loadCharacteristics(api, 0).enqueue(new Callback<ApiResponse>() {
+    /**
+     * Loads the car characteristics for a given filter from REST service, notifying the listeners when it is done.
+     *
+     * @param filter The car characteristics filter.
+     */
+    private void loadCharacteristics(@NonNull CarCharacteristicFilter filter) {
+        filter.loadCharacteristics(api, 0).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
                 List<CarCharacteristic> list = new LinkedList<>();

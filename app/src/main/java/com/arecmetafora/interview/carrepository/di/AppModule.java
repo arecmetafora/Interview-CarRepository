@@ -28,6 +28,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public abstract class AppModule {
 
+    /**
+     * Size of the page used for each api request.
+     */
     private static final int PAGE_SIZE = 15;
 
     @Binds

@@ -17,11 +17,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * Adapter used to render the list of car characteristic filters to be selected.
+ */
 public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<CarCharacteristicFilterListAdapter.ViewHolder> {
 
+    /**
+     * List of all loaded car characteristic filters.
+     */
     private List<CarCharacteristicFilter> mValues;
+
+    /**
+     * Listener to notify observers when a filter was selected.
+     */
     private CarCharacteristicFilterListener mListener;
 
+    /**
+     * ViewHolder for this adapter.
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final ImageView mImage;
@@ -36,7 +49,15 @@ public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<Car
         }
     }
 
+    /**
+     * Listener to notify events about filter selections.
+     */
     public interface CarCharacteristicFilterListener {
+        /**
+         * Called when a car characteristic filter was selected.
+         *
+         * @param characteristicFilter The selected car characteristic filter.
+         */
         void onCharacteristicFilterOpened(CarCharacteristicFilter characteristicFilter);
     }
 
@@ -45,6 +66,10 @@ public class CarCharacteristicFilterListAdapter extends RecyclerView.Adapter<Car
         this.mValues = values;
     }
 
+    /**
+     * Sets a listener for this adapter.
+     * @param mListener Listener to notify observers when a filter was selected.
+     */
     public void setListener(CarCharacteristicFilterListener mListener) {
         this.mListener = mListener;
     }

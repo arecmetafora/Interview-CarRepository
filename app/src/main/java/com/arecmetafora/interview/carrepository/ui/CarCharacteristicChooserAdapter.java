@@ -10,17 +10,31 @@ import android.widget.TextView;
 
 import com.arecmetafora.interview.carrepository.R;
 import com.arecmetafora.interview.carrepository.api.CarCharacteristic;
+import com.bumptech.glide.Glide;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * Adapter used to render the list of car characteristics to be chosen.
+ */
 public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCharacteristicChooserAdapter.ViewHolder> {
 
+    /**
+     * List of all loaded car characteristics.
+     */
     private List<CarCharacteristic> mValues;
+
+    /**
+     * Listener to notify observers when a car characteristic was chosen.
+     */
     private CarCharacteristicChooser.CarCharacteristicChooserListener mListener;
 
+    /**
+     * ViewHolder for this adapter.
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final ImageView mImage;
@@ -40,6 +54,10 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
         this.mValues = new LinkedList<>();
     }
 
+    /**
+     * Sets a listener for this adapter.
+     * @param mListener Listener to notify observers when a car characteristic was chosen.
+     */
     public void setListener(CarCharacteristicChooser.CarCharacteristicChooserListener mListener) {
         this.mListener = mListener;
     }
@@ -54,8 +72,19 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
 
     @Override
     public void onBindViewHolder(final @NonNull ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mDescription.setText(mValues.get(position).name);
+        CarCharacteristic characteristic = mValues.get(position);
+        holder.mItem = characteristic;
+
+        holder.mDescription.setText(characteristic.name);
+
+        holder.mImage.setVisibility(View.GONE);
+
+        if(characteristic.imageUrl != null) {
+            Glide.with(holder.mImage)
+                    .load(characteristic.imageUrl)
+                    .into(holder.mImage);
+            holder.mImage.setVisibility(View.VISIBLE);
+        }
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
@@ -69,6 +98,11 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
         return mValues.size();
     }
 
+    /**
+     * Sets the items used by this adapter to render car characteristics.
+     *
+     * @param items The new loaded items.
+     */
     void setItems(List<CarCharacteristic> items) {
         this.mValues = items;
         notifyDataSetChanged();

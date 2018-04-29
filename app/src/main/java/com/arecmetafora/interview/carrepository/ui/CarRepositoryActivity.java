@@ -14,10 +14,17 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
+/**
+ * Main Activity of this project, to provide an interface to users to select a list of car based on
+ * some filters.
+ */
 public class CarRepositoryActivity extends DaggerAppCompatActivity
         implements CarCharacteristicChooser.CarCharacteristicChooserListener,
                    CarCharacteristicFilterListAdapter.CarCharacteristicFilterListener {
 
+    /**
+     * List of car characteristic filters.
+     */
     @Inject
     List<CarCharacteristicFilter> mCarCharacteristicFilters;
 
@@ -42,7 +49,9 @@ public class CarRepositoryActivity extends DaggerAppCompatActivity
 
     @Override
     public void onCharacteristicFilterOpened(CarCharacteristicFilter characteristicFilter) {
-        CarCharacteristicChooser.newInstance(characteristicFilter)
-                .show(getSupportFragmentManager(), "DIALOG");
+        if(characteristicFilter.preRequisitesWereFulfilled()) {
+            CarCharacteristicChooser.newInstance(characteristicFilter)
+                    .show(getSupportFragmentManager(), "DIALOG");
+        }
     }
 }

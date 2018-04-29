@@ -12,6 +12,9 @@ import dagger.android.support.DaggerApplication;
  */
 public class CustomApplication extends DaggerApplication {
 
+    /**
+     * Application main component.
+     */
     private AppComponent appComponent;
 
     @Override
@@ -20,6 +23,9 @@ public class CustomApplication extends DaggerApplication {
         return appComponent;
     }
 
+    /**
+     * @return The application main component.
+     */
     public AppComponent getAppComponent() {
         return appComponent;
     }

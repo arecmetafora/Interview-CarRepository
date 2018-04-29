@@ -1,7 +1,11 @@
 package com.arecmetafora.interview.carrepository.ui;
 
+import android.content.Context;
+
+import com.arecmetafora.interview.carrepository.api.CarBuiltDateFilter;
 import com.arecmetafora.interview.carrepository.api.CarCharacteristicFilter;
 import com.arecmetafora.interview.carrepository.api.ManufacturerFilter;
+import com.arecmetafora.interview.carrepository.api.CarTypeFilter;
 import com.arecmetafora.interview.carrepository.di.ActivityScoped;
 import com.arecmetafora.interview.carrepository.di.FragmentScoped;
 
@@ -21,11 +25,19 @@ public abstract class CarRepositoryModule {
 
     @ActivityScoped
     @Provides
-    static List<CarCharacteristicFilter> provideCarCharacteristicFilters() {
+    static List<CarCharacteristicFilter> provideCarCharacteristicFilters(Context context) {
+
         List<CarCharacteristicFilter> filters = new LinkedList<>();
-        filters.add(new ManufacturerFilter());
-        filters.add(new ManufacturerFilter());
-        filters.add(new ManufacturerFilter());
+
+        ManufacturerFilter manufacturerFilter = new ManufacturerFilter(context);
+        filters.add(manufacturerFilter);
+
+        CarTypeFilter carTypeFilter = new CarTypeFilter(context, manufacturerFilter);
+        filters.add(carTypeFilter);
+
+        CarBuiltDateFilter builtDateFilter = new CarBuiltDateFilter(context, manufacturerFilter, carTypeFilter);
+        filters.add(builtDateFilter);
+
         return filters;
     }
 }

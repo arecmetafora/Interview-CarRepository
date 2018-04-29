@@ -28,6 +28,11 @@ import dagger.android.support.AndroidSupportInjectionModule;
         AndroidSupportInjectionModule.class})
 public interface AppComponent extends AndroidInjector<CustomApplication> {
 
+    /**
+     * Injects the dependencies on a {@link CarCharacteristicsViewModel} instance.
+     *
+     * @param carCharacteristicsViewModel Instance to have its dependencies injected.
+     */
     void inject(CarCharacteristicsViewModel carCharacteristicsViewModel);
 
     // Gives us syntactic sugar. we can then do DaggerAppComponent.builder().application(this).build().inject(this);

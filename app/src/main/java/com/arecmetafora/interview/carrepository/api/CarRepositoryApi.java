@@ -4,6 +4,9 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
+/**
+ * REST api for the car repository service.
+ */
 public interface CarRepositoryApi {
 
     @GET("manufacturer")
@@ -15,8 +18,8 @@ public interface CarRepositoryApi {
             @Query("manufacturer") String manufacturer,
             @Query("page") int page);
 
-    @GET("manufacturer")
-    Call<ApiResponse> getManufactures(
+    @GET("built-dates")
+    Call<ApiResponse> getBuiltDates(
             @Query("manufacturer") String manufacturer,
             @Query("main-type") String carType,
             @Query("page") int page);
