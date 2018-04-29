@@ -15,7 +15,7 @@ public class CarTypeFilter extends CarCharacteristicFilter {
     /**
      * Car Manufacturer filter, which this filter relies on.
      */
-    public ManufacturerFilter mManufacturerFilter;
+    private ManufacturerFilter mManufacturerFilter;
 
     /**
      * Creates a filter for car manufactures.

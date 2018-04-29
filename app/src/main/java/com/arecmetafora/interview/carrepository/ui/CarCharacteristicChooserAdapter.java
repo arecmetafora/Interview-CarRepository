@@ -58,6 +58,11 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
          * @param characteristic The chosen car characteristic.
          */
         void onCharacteristicSelected(CarCharacteristic characteristic);
+
+        /**
+         * Called when the adapter wants that more that be loaded.
+         */
+        void loadMoreData();
     }
 
     /**
@@ -109,6 +114,10 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
     public void onBindViewHolder(final @NonNull ViewHolder holder, int position) {
 
         if(getItemViewType(position) == VIEW_TYPE_LOADING) {
+            if(mListener != null) {
+                mListener.loadMoreData();
+            }
+
             // Nothing to bind...
             return;
         }
@@ -164,11 +173,24 @@ public class CarCharacteristicChooserAdapter extends RecyclerView.Adapter<CarCha
      * Sets the items used by this adapter to render car characteristics.
      *
      * @param items The new loaded items.
-     * @param hasMoreDataToLoad Whether there is still data to be loaded.
      */
-    void setItems(List<CarCharacteristic> items, boolean hasMoreDataToLoad) {
+    void setItems(List<CarCharacteristic> items) {
         this.mValues = items;
-        this.mHasMoreDataToLoad = hasMoreDataToLoad;
         notifyDataSetChanged();
+    }
+
+    /**
+     * Notifies the adapter that there is no more data to be loaded.
+     */
+    void noMoreDataToLoad() {
+        mHasMoreDataToLoad = false;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * @return Whether there is more data to load.
+     */
+    public boolean hasMoreDataToLoad() {
+        return mHasMoreDataToLoad;
     }
 }

@@ -74,8 +74,13 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment
                 ViewModelProviders.of(this)
                         .get(CarCharacteristicsViewModel.class)
                         .getCharacteristics(mFilter)
-                        .observe(this,
-                                characteristics -> mAdapter.setItems(characteristics, true));
+                        .observe(this, characteristics -> {
+                            if(characteristics != null) {
+                                mAdapter.setItems(characteristics);
+                            } else if(getView() != null) {
+                                getView().post(() -> mAdapter.noMoreDataToLoad());
+                            }
+                        });
             }
         }
     }
@@ -97,12 +102,10 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment
 
         // Adds scroll listener to load for data
         // TODO: Abstract this implementation to a class that extends ReciclerView and use it!
-        /*
         list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChange
-                d(recyclerView, newState);
+                super.onScrollStateChanged(recyclerView, newState);
             }
 
             @Override
@@ -112,16 +115,16 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment
                 int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-                if (!isLoading && !isLastPage) {
+                if(mAdapter.hasMoreDataToLoad()) {
                     if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= PAGE_SIZE) {
-                        loadMoreItems();
+                            && firstVisibleItemPosition >= 0) {
+                        ViewModelProviders.of(CarCharacteristicChooser.this)
+                                .get(CarCharacteristicsViewModel.class)
+                                .loadMoreCharacteristics(mFilter);
                     }
                 }
             }
         });
-        */
 
         return view;
     }
@@ -155,6 +158,13 @@ public class CarCharacteristicChooser extends DaggerAppCompatDialogFragment
             mListener.onCharacteristicSelectedForFilter(mFilter, characteristic);
         }
         getDialog().dismiss();
+    }
+
+    @Override
+    public void loadMoreData() {
+        ViewModelProviders.of(CarCharacteristicChooser.this)
+                .get(CarCharacteristicsViewModel.class)
+                .loadMoreCharacteristics(mFilter);
     }
 
     /**

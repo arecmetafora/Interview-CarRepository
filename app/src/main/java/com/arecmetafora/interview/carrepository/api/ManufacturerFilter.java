@@ -1,12 +1,9 @@
 package com.arecmetafora.interview.carrepository.api;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.arecmetafora.interview.carrepository.R;
-
-import javax.inject.Inject;
 
 import retrofit2.Call;
 

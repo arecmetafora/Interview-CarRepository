@@ -14,11 +14,6 @@ public class ApiResponse {
     public int page;
 
     /**
-     * Maximum of items for the page request.
-     */
-    public int pageSize;
-
-    /**
      * Total of pages the whole request contains.
      */
     public int totalPageCount;

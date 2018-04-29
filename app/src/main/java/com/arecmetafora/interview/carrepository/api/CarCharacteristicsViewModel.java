@@ -34,6 +34,21 @@ public class CarCharacteristicsViewModel extends AndroidViewModel {
     private MutableLiveData<List<CarCharacteristic>> mCharacteristics;
 
     /**
+     * Whether data is still loading.
+     */
+    private boolean mIsLoading = false;
+
+    /**
+     * Last page that was loaded.
+     */
+    private int mLastLoadedPage;
+
+    /**
+     * Total number of pages which contains all the car characteristics
+     */
+    private int mTotalNumberOfPages;
+
+    /**
      * Creates a new view model manager for this characteristic loader.
      *
      * @param application The current Android application.
@@ -52,8 +67,10 @@ public class CarCharacteristicsViewModel extends AndroidViewModel {
     public MutableLiveData<List<CarCharacteristic>> getCharacteristics(@NonNull CarCharacteristicFilter filter) {
         if (mCharacteristics == null) {
             mCharacteristics = new MutableLiveData<>();
-            loadCharacteristics(filter);
+            mCharacteristics.setValue(new LinkedList<>());
+            loadCharacteristics(filter, 0);
         }
+
         return mCharacteristics;
     }
 
@@ -61,15 +78,23 @@ public class CarCharacteristicsViewModel extends AndroidViewModel {
      * Loads the car characteristics for a given filter from REST service, notifying the listeners when it is done.
      *
      * @param filter The car characteristics filter.
+     * @param page Page number to load.
      */
-    private void loadCharacteristics(@NonNull CarCharacteristicFilter filter) {
-        filter.loadCharacteristics(api, 0).enqueue(new Callback<ApiResponse>() {
+    private void loadCharacteristics(@NonNull CarCharacteristicFilter filter, int page) {
+        mIsLoading = true;
+        filter.loadCharacteristics(api, page).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
-                List<CarCharacteristic> list = new LinkedList<>();
+                List<CarCharacteristic> list = mCharacteristics.getValue();
+                assert list != null;
 
-                assert response.body() != null;
-                for(Map.Entry<String, String> values : response.body().wkda.entrySet()) {
+                ApiResponse result = response.body();
+                assert result != null;
+
+                mTotalNumberOfPages = result.totalPageCount;
+                mLastLoadedPage = result.page;
+
+                for(Map.Entry<String, String> values : result.wkda.entrySet()) {
                     CarCharacteristic c = new CarCharacteristic();
                     c.id = values.getKey();
                     c.name = values.getValue();
@@ -77,11 +102,27 @@ public class CarCharacteristicsViewModel extends AndroidViewModel {
                 }
 
                 mCharacteristics.setValue(list);
+                mIsLoading = false;
             }
             @Override
             public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
-
+                loadCharacteristics(filter, page);
             }
         });
+    }
+
+    /**
+     * Load more car characteristics if there is another page to get.
+     */
+    public void loadMoreCharacteristics(@NonNull CarCharacteristicFilter filter) {
+        if(mCharacteristics == null || mIsLoading) {
+            return;
+        }
+
+        if(mLastLoadedPage + 1 < mTotalNumberOfPages) {
+            loadCharacteristics(filter, mLastLoadedPage + 1);
+        } else {
+            mCharacteristics.setValue(null);
+        }
     }
 }

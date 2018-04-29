@@ -16,10 +16,10 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="30sp"
+        android:layout_marginTop="16dp"
         android:text="@string/app_name"
-        android:textStyle="bold"
+        android:textSize="40sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintEnd_toEndOf="@+id/car_repository_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +30,7 @@
         android:layout_height="100dp"
         android:scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:contentDescription="@string/all_characteristics"
         app:srcCompat="@drawable/icon" />
 
     <android.support.v7.widget.RecyclerView
